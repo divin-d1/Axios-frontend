@@ -16,7 +16,7 @@ export default function EmailsPage() {
     const fetchJobs = async () => {
       try {
         const res: any = await apiClient.get('/jobs');
-        const allJobs = res.data?.jobs || [];
+        const allJobs = res.data?.data || [];
         setJobs(allJobs);
         if (allJobs.length > 0) setSelectedJob(allJobs[0]._id);
       } catch (err) {

@@ -21,7 +21,7 @@ export default function JobsPage() {
     const fetchJobs = async () => {
       try {
         const res: any = await apiClient.get('/jobs');
-        setJobs(res.data?.jobs || []);
+        setJobs(res.data?.data || []);
       } catch (err: any) {
         toast.error('Failed to load jobs');
       } finally {

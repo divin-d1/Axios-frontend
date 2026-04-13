@@ -20,7 +20,7 @@ export default function CandidatesPage() {
     const fetchCandidates = async () => {
       try {
         const res: any = await apiClient.get('/candidates');
-        setCandidates(res.data?.candidates || []);
+        setCandidates(res.data?.data || []);
       } catch (err) {
         toast.error('Failed to load candidates');
       } finally {
