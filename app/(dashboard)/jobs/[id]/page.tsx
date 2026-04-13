@@ -62,7 +62,7 @@ export default function JobDetailPage() {
           </svg>
         ) : (
           <div className="text-center">
-            <p className="text-[#71717a] mb-2">{error || 'Job not found'}</p>
+            <p className="text-[#71717a] mb-2">Job not found</p>
             <Link href="/jobs" className="text-sm font-medium hover:underline">← Back to Jobs</Link>
           </div>
         )}
