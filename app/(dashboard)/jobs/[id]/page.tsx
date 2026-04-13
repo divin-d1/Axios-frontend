@@ -18,8 +18,7 @@ export default function JobDetailPage() {
   const router = useRouter();
   const toast = useToast();
   const [job, setJob] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
-  const [screening, setScreening] = useState(false);
+  const [error, setError] = useState('');
 
   useEffect(() => {
     if (!id) return;
@@ -27,8 +26,10 @@ export default function JobDetailPage() {
       try {
         const res: any = await apiClient.get(`/jobs/${id}`);
         setJob(res.data?.data || null);
-      } catch (err) {
-        toast.error('Failed to load job details');
+      } catch (err: any) {
+        const msg = err.response?.data?.error || 'Failed to load job details';
+        setError(msg);
+        toast.error(msg);
       } finally {
         setLoading(false);
       }
@@ -51,14 +52,17 @@ export default function JobDetailPage() {
 
   if (loading || !job) {
     return (
-      <div className="p-8 max-w-4xl mx-auto flex items-center justify-center min-h-[50vh]">
+      <div className="p-8 max-w-4xl mx-auto flex flex-col items-center justify-center min-h-[50vh]">
         {loading ? (
           <svg className="animate-spin h-8 w-8 text-[#09090b]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
             <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
             <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
           </svg>
         ) : (
-          <div className="text-[#71717a]">Job not found</div>
+          <div className="text-center">
+            <p className="text-[#71717a] mb-2">{error || 'Job not found'}</p>
+            <Link href="/jobs" className="text-sm font-medium hover:underline">← Back to Jobs</Link>
+          </div>
         )}
       </div>
     );
