@@ -1,26 +1,106 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@theme {
+  --color-background: #ffffff;
+  --color-foreground: #09090b;
+  --color-card: #ffffff;
+  --color-card-foreground: #09090b;
+  --color-sidebar: #09090b;
+  --color-sidebar-foreground: #fafafa;
+  --color-primary: #09090b;
+  --color-primary-foreground: #ffffff;
+  --color-secondary: #f4f4f5;
+  --color-secondary-foreground: #09090b;
+  --color-muted: #f4f4f5;
+  --color-muted-foreground: #71717a;
+  --color-accent: #f4f4f5;
+  --color-accent-foreground: #09090b;
+  --color-border: #e4e4e7;
+  --color-input: #e4e4e7;
+  --color-ring: #09090b;
+  
+  --radius-lg: 0.75rem;
+  --radius-md: 0.5rem;
+  --radius-sm: 0.375rem;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    @apply antialiased min-h-screen text-sm;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* Custom Scrollbar */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #d4d4d8; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #a1a1aa; }
+
+/* Card */
+.card {
+  @apply bg-white border border-[#e4e4e7] rounded-xl shadow-sm;
+}
+.card-dark {
+  @apply bg-[#09090b] text-white border border-[#27272a] rounded-xl;
+}
+
+/* Inputs */
+.input {
+  @apply bg-white border border-[#e4e4e7] rounded-lg px-4 py-2.5 text-[#09090b] placeholder-[#a1a1aa] focus:border-[#09090b] focus:ring-1 focus:ring-[#09090b] transition-all outline-none text-sm;
+}
+
+/* Buttons */
+.btn-primary {
+  @apply bg-[#09090b] text-white px-5 py-2.5 rounded-lg font-medium hover:bg-[#27272a] transition-colors text-sm;
+}
+.btn-outline {
+  @apply bg-white text-[#09090b] px-5 py-2.5 rounded-lg font-medium border border-[#e4e4e7] hover:bg-[#f4f4f5] transition-colors text-sm;
+}
+
+/* Sidebar */
+.sidebar {
+  @apply bg-[#09090b] text-white flex flex-col;
+  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.sidebar-collapsed { width: 72px; }
+.sidebar-expanded { width: 260px; }
+
+/* Stat Card */
+.stat-card {
+  @apply p-6 bg-white border border-[#e4e4e7] rounded-xl transition-all hover:shadow-md;
+}
+
+/* Table */
+.table-row {
+  @apply border-b border-[#f4f4f5] hover:bg-[#fafafa] transition-colors;
+}
+
+/* Badge */
+.badge {
+  @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+}
+.badge-success { @apply bg-[#dcfce7] text-[#166534]; }
+.badge-warning { @apply bg-[#fef9c3] text-[#854d0e]; }
+.badge-info { @apply bg-[#dbeafe] text-[#1e40af]; }
+.badge-neutral { @apply bg-[#f4f4f5] text-[#71717a]; }
+
+/* Animations */
+.animate-fade-in {
+  animation: fadeIn 0.4s ease-out forwards;
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-slide-in {
+  animation: slideIn 0.3s ease-out forwards;
+}
+@keyframes slideIn {
+  from { opacity: 0; transform: translateX(-12px); }
+  to { opacity: 1; transform: translateX(0); }
 }
