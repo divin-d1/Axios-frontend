@@ -20,7 +20,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${inter.variable} font-sans min-h-screen flex overflow-hidden bg-white text-[#09090b]`}>
+      <body className={`${inter.variable} font-sans min-h-screen flex bg-white text-[#09090b]`}>
         <ToastProvider>
           {children}
         </ToastProvider>
