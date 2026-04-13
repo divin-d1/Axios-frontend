@@ -169,7 +169,7 @@ export default function JobDetailPage() {
             onClick={() => !uploading && csvInputRef.current?.click()}
             className="border-2 border-dashed border-[#e4e4e7] rounded-xl p-6 text-center cursor-pointer hover:border-[#09090b] hover:bg-[#fafafa] transition-all"
           >
-            <input ref={csvInputRef} type="file" accept=".csv,.xlsx,.xls" onChange={handleCSVUpload} className="hidden" />
+            <input ref={csvInputRef} disabled={uploading} type="file" accept=".csv,.xlsx,.xls" onChange={handleCSVUpload} className="hidden" />
             <svg className="w-8 h-8 mx-auto mb-3 text-[#a1a1aa]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
               <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
               <polyline points="14 2 14 8 20 8" />
@@ -177,7 +177,7 @@ export default function JobDetailPage() {
               <line x1="9" y1="15" x2="15" y2="15" />
             </svg>
             <p className="font-medium text-sm">Bulk Upload (CSV / Excel)</p>
-            <p className="text-xs text-[#a1a1aa] mt-1">Columns: name, email, phone, skills, experience</p>
+            <p className="text-xs text-[#a1a1aa] mt-1">Columns: firstName, lastName, email, headline, location, skills</p>
           </div>
 
           {/* PDF Resume Upload */}
@@ -185,7 +185,7 @@ export default function JobDetailPage() {
             onClick={() => !uploading && resumeInputRef.current?.click()}
             className="border-2 border-dashed border-[#e4e4e7] rounded-xl p-6 text-center cursor-pointer hover:border-[#09090b] hover:bg-[#fafafa] transition-all"
           >
-            <input ref={resumeInputRef} type="file" accept=".pdf" onChange={handleResumeUpload} className="hidden" />
+            <input ref={resumeInputRef} disabled={uploading} type="file" accept=".pdf" onChange={handleResumeUpload} className="hidden" />
             <svg className="w-8 h-8 mx-auto mb-3 text-[#a1a1aa]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
               <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
               <polyline points="14 2 14 8 20 8" />

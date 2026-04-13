@@ -159,7 +159,7 @@ export default function CandidatesPage() {
               selectedJob ? 'border-[#e4e4e7] cursor-pointer hover:border-[#09090b] hover:bg-[#fafafa]' : 'border-[#f4f4f5] opacity-50 cursor-not-allowed'
             }`}
           >
-            <input ref={csvInputRef} type="file" accept=".csv,.xlsx,.xls" onChange={handleCSVUpload} className="hidden" />
+            <input ref={csvInputRef} disabled={uploading} type="file" accept=".csv,.xlsx,.xls" onChange={handleCSVUpload} className="hidden" />
             <svg className="w-8 h-8 mx-auto mb-3 text-[#a1a1aa]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
               <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
               <polyline points="14 2 14 8 20 8" />
@@ -177,7 +177,7 @@ export default function CandidatesPage() {
               selectedJob ? 'border-[#e4e4e7] cursor-pointer hover:border-[#09090b] hover:bg-[#fafafa]' : 'border-[#f4f4f5] opacity-50 cursor-not-allowed'
             }`}
           >
-            <input ref={resumeInputRef} type="file" accept=".pdf" onChange={handleResumeUpload} className="hidden" />
+            <input ref={resumeInputRef} disabled={uploading} type="file" accept=".pdf" onChange={handleResumeUpload} className="hidden" />
             <svg className="w-8 h-8 mx-auto mb-3 text-[#a1a1aa]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
               <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
               <polyline points="14 2 14 8 20 8" />
