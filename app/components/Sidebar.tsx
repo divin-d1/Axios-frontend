@@ -32,7 +32,13 @@ export default function Sidebar() {
   const [expanded, setExpanded] = useState(false);
 
   // Hide on auth/onboarding pages
-  if (pathname.startsWith('/login') || pathname.startsWith('/register') || pathname.startsWith('/onboarding')) {
+  if (
+    pathname.startsWith('/login') || 
+    pathname.startsWith('/register') || 
+    pathname.startsWith('/onboarding') ||
+    pathname.startsWith('/forgot-password') ||
+    pathname.startsWith('/reset-password')
+  ) {
     return null;
   }
 

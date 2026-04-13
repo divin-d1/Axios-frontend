@@ -3,8 +3,8 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import apiClient from '../lib/api';
-import { useToast } from '../components/Toast';
+import apiClient from '../../lib/api';
+import { useToast } from '../../components/Toast';
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState('');
@@ -90,11 +90,7 @@ export default function ForgotPasswordPage() {
         </div>
       </div>
       
-      {/* Footer Branding */}
-      <div className="absolute bottom-6 right-6 flex items-center bg-white/70 backdrop-blur-md px-3 py-1.5 rounded-full border border-black/5 shadow-sm">
-        <span className="text-xs text-[#a1a1aa] mr-2 font-medium">presented by</span>
-        <img src="/logo.png" alt="Axios" className="h-3 object-contain opacity-80" />
-      </div>
+
     </div>
   );
 }

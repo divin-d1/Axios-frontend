@@ -3,8 +3,8 @@
 import { useState, useEffect, Suspense } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
-import apiClient from '../lib/api';
-import { useToast } from '../components/Toast';
+import apiClient from '../../lib/api';
+import { useToast } from '../../components/Toast';
 
 function ResetPasswordForm() {
   const [email, setEmail] = useState('');

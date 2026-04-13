@@ -3,8 +3,8 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
-import apiClient from '../../lib/api';
-import { useToast } from '../../components/Toast';
+import apiClient from '../../../lib/api';
+import { useToast } from '../../../components/Toast';
 
   // Removed mockResults
 

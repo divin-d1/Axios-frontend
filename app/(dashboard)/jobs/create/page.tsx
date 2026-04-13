@@ -2,8 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import apiClient from '../../lib/api';
-import { useToast } from '../../components/Toast';
+import apiClient from '../../../lib/api';
+import { useToast } from '../../../components/Toast';
 
 export default function CreateJobPage() {
   const [availableDepartments, setAvailableDepartments] = useState<string[]>([]);

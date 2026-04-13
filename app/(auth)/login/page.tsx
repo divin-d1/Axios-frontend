@@ -3,8 +3,8 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import apiClient from '../lib/api';
-import { useToast } from '../components/Toast';
+import apiClient from '../../lib/api';
+import { useToast } from '../../components/Toast';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -112,7 +112,7 @@ export default function LoginPage() {
           
             <div className="flex justify-between items-center mt-6">
               <span className="text-sm text-[#71717a]">Don't have an account? <Link href="/register" className="font-medium text-[#09090b] hover:underline">Create an account</Link></span>
-              <Link href="/forgot-password" className="text-sm font-medium text-[#09090b] hover:underline">Forgot password?</Link>
+              <Link href="/forgot-password" className="text-sm font-normal text-[#71717a] hover:text-[#09090b] hover:underline transition-colors">Forgot password?</Link>
             </div>
 
           <p className="text-xs text-[#a1a1aa] text-center mt-8">

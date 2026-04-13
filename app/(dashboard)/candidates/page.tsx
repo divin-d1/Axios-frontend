@@ -2,8 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import apiClient from '../lib/api';
-import { useToast } from '../components/Toast';
+import apiClient from '../../lib/api';
+import { useToast } from '../../components/Toast';
 
 const statusColor = (s: string) => {
   if (s === 'Shortlisted') return 'badge-success';

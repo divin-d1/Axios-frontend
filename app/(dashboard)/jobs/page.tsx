@@ -2,8 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import apiClient from '../lib/api';
-import { useToast } from '../components/Toast';
+import apiClient from '../../lib/api';
+import { useToast } from '../../components/Toast';
 
 const statusBadge = (status: string) => {
   const styles: Record<string, string> = {

@@ -1,8 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import apiClient from '../lib/api';
-import { useToast } from '../components/Toast';
+import apiClient from '../../lib/api';
+import { useToast } from '../../components/Toast';
 
 const steps = [
   { id: 1, label: 'Company Info' },
