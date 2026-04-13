@@ -76,10 +76,14 @@ export default function RegisterPage() {
         email: formData.email, 
         password: formData.password 
       });
-      toast.success('Registration initiated. Verification code sent to email.');
+      toast.success('Account created successfully. Please verify your account.');
       setShowOtpModal(true); // Open the verifier modal
     } catch (err: any) {
       toast.error(err.response?.data?.error || 'Registration failed. Try again.');
+      // Reset register form to try again on failure
+      setFormData({ name: '', email: '', password: '', confirm: '' });
+      setShowPassword(false);
+      setShowConfirmPassword(false);
     } finally {
       setLoading(false);
     }
@@ -96,13 +100,13 @@ export default function RegisterPage() {
         code: otpCode
       });
       
-      // Persist auth
+      // Persist auth token
       document.cookie = `token=${res.data.token}; path=/; max-age=${30 * 24 * 60 * 60}; samesite=strict`;
       
       toast.success('Account verified successfully!');
       setTimeout(() => {
-        router.push('/onboarding');
-      }, 1000);
+        router.push('/login'); // Redirect to login as requested
+      }, 1500);
     } catch (err: any) {
       toast.error(err.response?.data?.error || 'Invalid or expired code.');
       setVerifying(false);
