@@ -71,13 +71,23 @@ export default function RegisterPage() {
 
     setLoading(true);
     try {
-      await apiClient.post('/auth/register', { 
+      const res: any = await apiClient.post('/auth/register', { 
         name: formData.name, 
         email: formData.email, 
         password: formData.password 
       });
-      toast.success('Account created successfully. Please verify your account.');
-      setShowOtpModal(true); // Open the verifier modal
+      
+      // Temp Hackathon Bypass: Auto-login disabled OTP barrier
+      if (res.data.token) {
+        document.cookie = `token=${res.data.token}; path=/; max-age=${30 * 24 * 60 * 60}; samesite=strict`;
+        toast.success('Account created successfully!');
+        setTimeout(() => {
+          router.push('/onboarding');
+        }, 1500);
+      } else {
+        toast.success('Account created successfully. Please verify your account.');
+        setShowOtpModal(true); // Fallback for when email is enabled
+      }
     } catch (err: any) {
       toast.error(err.response?.data?.error || 'Registration failed. Try again.');
       // Reset register form to try again on failure
