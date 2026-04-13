@@ -18,6 +18,8 @@ export default function JobDetailPage() {
   const router = useRouter();
   const toast = useToast();
   const [job, setJob] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [screening, setScreening] = useState(false);
   const [error, setError] = useState('');
 
   useEffect(() => {
