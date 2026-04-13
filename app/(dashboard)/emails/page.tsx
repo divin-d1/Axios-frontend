@@ -1,24 +1,62 @@
 'use client';
 
-import { useState } from 'react';
-
-const mockJobs = [
-  { id: '3', title: 'ML Engineer — 8 shortlisted' },
-  { id: '1', title: 'Senior Backend Engineer — 5 shortlisted' },
-];
+import { useState, useEffect } from 'react';
+import apiClient from '../../lib/api';
+import { useToast } from '../../components/Toast';
 
 export default function EmailsPage() {
-  const [selectedJob, setSelectedJob] = useState('3');
+  const [jobs, setJobs] = useState<any[]>([]);
+  const [selectedJob, setSelectedJob] = useState('');
+  const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(false);
   const [sent, setSent] = useState(false);
+  const toast = useToast();
 
-  const handleSend = () => {
+  useEffect(() => {
+    const fetchJobs = async () => {
+      try {
+        const res: any = await apiClient.get('/jobs');
+        const allJobs = res.data?.jobs || [];
+        setJobs(allJobs);
+        if (allJobs.length > 0) setSelectedJob(allJobs[0]._id);
+      } catch (err) {
+        toast.error('Failed to load job pipelines');
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchJobs();
+  }, []);
+
+  const handleSend = async () => {
+    if (!selectedJob) {
+      toast.error('Please select a job pipeline');
+      return;
+    }
     setSending(true);
-    setTimeout(() => {
-      setSending(false);
+    try {
+      const res: any = await apiClient.post(`/emails/shortlist/${selectedJob}`);
+      toast.success(res.data?.message || 'Emails dispatched successfully!');
       setSent(true);
-    }, 1500);
+    } catch (err: any) {
+      // Email service is currently disabled — show a meaningful message
+      const msg = err.response?.data?.message || err.response?.data?.error || 'Email dispatch is currently disabled. SMTP is not configured.';
+      toast.error(msg);
+    } finally {
+      setSending(false);
+    }
   };
+
+  if (loading) {
+    return (
+      <div className="p-8 max-w-3xl mx-auto flex items-center justify-center min-h-[50vh]">
+        <svg className="animate-spin h-8 w-8 text-[#09090b]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+        </svg>
+      </div>
+    );
+  }
 
   return (
     <div className="p-8 max-w-3xl mx-auto animate-fade-in">
@@ -30,9 +68,13 @@ export default function EmailsPage() {
       <div className="card p-8 space-y-6">
         <div className="space-y-1.5">
           <label className="text-sm font-medium">Select Job Pipeline</label>
-          <select value={selectedJob} onChange={(e) => setSelectedJob(e.target.value)} className="input w-full bg-white">
-            {mockJobs.map(j => <option key={j.id} value={j.id}>{j.title}</option>)}
-          </select>
+          {jobs.length === 0 ? (
+            <p className="text-sm text-[#a1a1aa]">No jobs found. Create a job first.</p>
+          ) : (
+            <select value={selectedJob} onChange={(e) => { setSelectedJob(e.target.value); setSent(false); }} className="input w-full bg-white">
+              {jobs.map(j => <option key={j._id} value={j._id}>{j.title} — {j.shortlistSize || 0} shortlisted</option>)}
+            </select>
+          )}
         </div>
 
         <div className="bg-[#fafafa] border border-[#e4e4e7] rounded-lg p-6 space-y-3">
@@ -49,7 +91,7 @@ export default function EmailsPage() {
             ✓ Emails dispatched successfully to all shortlisted candidates
           </div>
         ) : (
-          <button onClick={handleSend} disabled={sending} className="btn-primary w-full disabled:opacity-50">
+          <button onClick={handleSend} disabled={sending || jobs.length === 0} className="btn-primary w-full disabled:opacity-50">
             {sending ? 'Dispatching...' : 'Send Notification Emails'}
           </button>
         )}

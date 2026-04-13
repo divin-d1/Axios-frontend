@@ -1,6 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import apiClient from '../../lib/api';
+import { useToast } from '../../components/Toast';
 
 const INDUSTRIES = [
   'Financial Technology', 'E-commerce', 'Healthcare Technology', 
@@ -10,19 +12,47 @@ const INDUSTRIES = [
 
 export default function CompanyProfile() {
   const [saving, setSaving] = useState(false);
-  const [saved, setSaved] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [companyId, setCompanyId] = useState<string | null>(null);
+  const toast = useToast();
+
   const [formData, setFormData] = useState({
-    name: 'Umurava Innovations', 
-    industries: ['Financial Technology', 'Software Development'], 
-    departments: ['Engineering', 'Product', 'Sales'],
-    specialization: 'AI / Machine Learning',
-    size: 'medium', hiringPhilosophy: 'balanced', 
-    email: 'hr@umurava.tech', website: 'https://umurava.tech',
-    description: 'We build AI-powered solutions for the African financial ecosystem.', 
-    skills: 'React, Node.js, Python, MongoDB, AWS',
+    name: '', industries: [] as string[], departments: [] as string[],
+    specialization: '', size: 'startup', hiringPhilosophy: 'balanced', 
+    email: '', website: '', description: '', skills: '',
   });
 
   const [newDepartment, setNewDepartment] = useState('');
+
+  useEffect(() => {
+    const fetchCompany = async () => {
+      try {
+        const res: any = await apiClient.get('/companies');
+        const companies = res.data?.companies || res.data || [];
+        if (companies.length > 0) {
+          const c = companies[0];
+          setCompanyId(c._id);
+          setFormData({
+            name: c.name || '',
+            industries: c.industries || [],
+            departments: c.departments || [],
+            specialization: c.specialization || '',
+            size: c.size || 'startup',
+            hiringPhilosophy: c.hiringPhilosophy || 'balanced',
+            email: c.email || '',
+            website: c.website || '',
+            description: c.description || '',
+            skills: (c.skills || []).join(', '),
+          });
+        }
+      } catch (err) {
+        console.error('Failed to load company profile', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchCompany();
+  }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -48,11 +78,38 @@ export default function CompanyProfile() {
     setFormData(prev => ({ ...prev, departments: prev.departments.filter(d => d !== dep) }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSaving(true);
-    setTimeout(() => { setSaving(false); setSaved(true); setTimeout(() => setSaved(false), 2000); }, 800);
+    try {
+      const payload = {
+        ...formData,
+        skills: formData.skills.split(',').map(s => s.trim()).filter(Boolean),
+      };
+      if (companyId) {
+        await apiClient.put(`/companies/${companyId}`, payload);
+      } else {
+        const res: any = await apiClient.post('/companies', payload);
+        setCompanyId(res.data?.company?._id || res.data?._id);
+      }
+      toast.success('Company profile saved successfully');
+    } catch (err: any) {
+      toast.error(err.response?.data?.error || 'Failed to save company profile');
+    } finally {
+      setSaving(false);
+    }
   };
+
+  if (loading) {
+    return (
+      <div className="p-8 max-w-3xl mx-auto flex items-center justify-center min-h-[50vh]">
+        <svg className="animate-spin h-8 w-8 text-[#09090b]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+        </svg>
+      </div>
+    );
+  }
 
   return (
     <div className="p-8 max-w-3xl mx-auto animate-fade-in">
@@ -139,9 +196,7 @@ export default function CompanyProfile() {
           <textarea name="description" value={formData.description} onChange={handleChange} className="input w-full min-h-24 resize-y" />
         </div>
         
-        <div className="flex items-center justify-between pt-4 border-t border-[#e4e4e7]">
-          {saved && <span className="text-sm text-[#166534] font-medium">✓ Saved successfully</span>}
-          {!saved && <span />}
+        <div className="flex items-center justify-end pt-4 border-t border-[#e4e4e7]">
           <button type="submit" disabled={saving} className="btn-primary disabled:opacity-50">
             {saving ? 'Saving...' : 'Save Configuration'}
           </button>
