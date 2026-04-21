@@ -157,7 +157,7 @@ export default function ScreeningResults() {
                 </div>
               </div>
 
-              <div className="flex flex-col lg:flex-row gap-6">
+              <div className="flex flex-col lg:flex-row gap-6 mt-8">
                 <div className="lg:w-1/3 space-y-4">
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-full bg-[#09090b] text-white flex items-center justify-center text-sm font-bold shadow-sm">
@@ -196,27 +196,27 @@ export default function ScreeningResults() {
                   </div>
 
                   <div className="space-y-2">
-                    <h3 className="text-xs font-semibold text-[#a1a1aa] uppercase tracking-wider">Screening Justification</h3>
-                    <p className="text-xs text-[#71717a] leading-relaxed" title={result.reasoning}>{result.reasoning || 'No reasoning available.'}</p>
-                    <div className="grid grid-cols-2 gap-2 pt-2">
-                      <div className="p-2 rounded-lg bg-[#dcfce7]/50 border border-[#bbf7d0]">
-                        <p className="text-[10px] font-semibold text-[#166534] mb-1">Strengths</p>
+                    <h3 className="text-xs font-semibold text-[#a1a1aa] uppercase tracking-wider mt-4">Screening Justification</h3>
+                    <p className="text-xs text-[#71717a] leading-relaxed mt-2" title={result.reasoning}>{result.reasoning || 'No reasoning available.'}</p>
+                    <div className="grid grid-cols-2 gap-4 mt-6">
+                      <div className="p-3 rounded-lg bg-white border border-black">
+                        <p className="text-[11px] font-bold text-black mb-2">Strengths</p>
                         {(result.strengths?.length ?? 0) > 0 ? (
-                          <ul className="text-[10px] text-[#166534]/80 space-y-0.5 ml-1">
+                          <ul className="text-[11px] text-black space-y-1 ml-1">
                             {result.strengths?.map((strength: string, strengthIndex: number) => <li key={strengthIndex}>• {strength}</li>)}
                           </ul>
                         ) : (
-                          <p className="text-[10px] text-[#166534]/80">No explicit strengths listed.</p>
+                          <p className="text-[11px] text-black">No explicit strengths listed.</p>
                         )}
                       </div>
-                      <div className="p-2 rounded-lg bg-[#fef2f2]/50 border border-[#fecaca]">
-                        <p className="text-[10px] font-semibold text-[#991b1b] mb-1">Gaps</p>
+                      <div className="p-3 rounded-lg bg-white border border-black">
+                        <p className="text-[11px] font-bold text-black mb-2">Gaps</p>
                         {(result.weaknesses?.length ?? 0) > 0 ? (
-                          <ul className="text-[10px] text-[#991b1b]/80 space-y-0.5 ml-1">
+                          <ul className="text-[11px] text-black space-y-1 ml-1">
                             {result.weaknesses?.map((weakness: string, weaknessIndex: number) => <li key={weaknessIndex}>• {weakness}</li>)}
                           </ul>
                         ) : (
-                          <p className="text-[10px] text-[#991b1b]/80">No explicit gaps listed.</p>
+                          <p className="text-[11px] text-black">No explicit gaps listed.</p>
                         )}
                       </div>
                     </div>

@@ -80,7 +80,7 @@ export default function JobsPage() {
                   <td className="px-6 py-4 font-medium">{job.title}</td>
                   <td className="px-6 py-4 text-[#71717a] text-sm">{job.department}</td>
                   <td className="px-6 py-4 text-[#71717a] text-sm">{job.location}</td>
-                  <td className="px-6 py-4 text-sm">{job.candidates?.length || 0}</td>
+                  <td className="px-6 py-4 text-sm">{job.totalApplicants || 0}</td>
                   <td className="px-6 py-4"><span className={`badge ${statusBadge(job.status || 'open')}`}>{job.status || 'open'}</span></td>
                   <td className="px-6 py-4 text-[#a1a1aa] text-sm">{job.createdAt ? new Date(job.createdAt).toLocaleDateString() : 'Recently'}</td>
                   <td className="px-6 py-4"><Link href={`/jobs/${job._id || job.id}`} className="text-sm font-medium hover:underline">View →</Link></td>
