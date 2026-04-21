@@ -1,146 +1,132 @@
-# Axios Frontend Architecture (Next.js)
+# Axios Frontend
 
-Recruiter-facing web client for the Umurava AI Hackathon solution: an AI-assisted hiring workflow that ranks applicants while preserving human decision authority.
-
----
-
-## 1) Product Responsibility
-
-This frontend is responsible for the complete recruiter experience:
-
-- authenticated access and secure session routing
-- one-time onboarding for company context
-- job creation, update, and deletion flows
-- candidate ingestion UX (CSV/Excel and PDF resume upload)
-- screening execution and ranked shortlist review
-- communication actions (shortlist email dispatch)
-- mobile-first, responsive operations dashboard
-
-The frontend never performs final hiring decisions. It presents AI results with explanation so a recruiter remains the final authority.
+Recruiter-facing web client for the Axios AI screening platform. Built with Next.js 16, React 19, and Tailwind CSS 4.
 
 ---
 
-## 2) System Context (Frontend Perspective)
+## Responsibility
 
-```mermaid
-flowchart LR
-  Recruiter[Recruiter Browser]
-  FE[Next.js Frontend]
-  BE[Express API]
-  DB[(MongoDB Atlas)]
-  AI[Gemini API]
+This module owns the complete recruiter experience:
 
-  Recruiter --> FE
-  FE -->|REST JSON| BE
-  BE --> DB
-  BE --> AI
-```
+- Secure authentication and session-based route protection
+- Company onboarding (one-time AI calibration setup)
+- Job creation, editing, and deletion
+- Candidate ingestion via CSV/Excel upload or PDF resume
+- AI screening trigger and ranked shortlist review
+- Per-candidate reasoning display (strengths, gaps, recommendation)
+- Shortlist email dispatch
+- Company profile management
+- Mobile-responsive dashboard
 
-The frontend only consumes API contracts from backend and renders secure, role-appropriate views.
+The frontend never makes hiring decisions. It presents AI output with full explanation so the recruiter remains the final authority.
 
 ---
 
-## 3) Frontend Technical Stack
+## Stack
 
-- `Next.js 16` (App Router)
-- `React 19`
-- `TypeScript`
-- `Tailwind CSS 4`
-- Fetch-based API client with JWT bearer token sourced from cookie
-
----
-
-## 4) Frontend Architecture
-
-### Route Layers
-
-- Auth pages: `/login`, `/register`, `/forgot-password`, `/reset-password`
-- Onboarding page: `/onboarding`
-- Dashboard pages: `/`, `/jobs`, `/jobs/create`, `/jobs/[id]`, `/screening/[jobId]`, `/candidates`, `/candidates/[id]`, `/emails`, `/company`
-
-### Access Enforcement
-
-Access control is applied in `proxy.ts`:
-
-- unauthenticated users are redirected to `/login` for protected routes
-- authenticated users are redirected away from public auth pages to `/`
-
-### Core Frontend Modules
-
-- `app/lib/api.ts` - typed API wrapper and auth header injection
-- `app/lib/errors.ts` - API error extraction for consistent UI messages
-- `app/lib/types.ts` - shared domain models used by screens
-- `app/components/Sidebar.tsx` - desktop sidebar + mobile bottom navigation
-- `app/components/Toast.tsx` - global feedback UX for async operations
+| | |
+|---|---|
+| Framework | Next.js 16 (App Router) |
+| UI Library | React 19 |
+| Language | TypeScript |
+| Styling | Tailwind CSS 4 |
+| State | React hooks + context |
+| Auth | JWT stored in cookie, enforced at edge via middleware |
 
 ---
 
-## 5) Main User Workflows
+## Route Map
 
-### A. First Login / Onboarding
+### Auth Routes
+| Route | Purpose |
+|---|---|
+| `/login` | Recruiter sign-in |
+| `/register` | New account creation |
+| `/forgot-password` | Password reset request |
+| `/reset-password` | OTP-based password reset |
+| `/onboarding` | First-time company setup (locked after completion) |
 
-1. user authenticates
-2. frontend checks `/company/me`
-3. no company -> force onboarding
-4. existing company -> redirect to dashboard
-
-### B. Job Lifecycle
-
-1. recruiter creates job with scoring config and shortlist target
-2. recruiter can update job fields
-3. recruiter can delete a job
-4. delete action cascades in backend to related candidates/screening data
-
-### C. Candidate Ingestion
-
-1. recruiter selects target job pipeline
-2. uploads spreadsheet or PDF
-3. frontend streams file to backend endpoints
-4. backend parses and persists candidate data
-
-### D. Screening and Decision Support
-
-1. recruiter triggers screening from job detail
-2. screening is blocked in UI if no candidates exist
-3. results page renders ranked shortlist, scores, and reasoning
-4. recruiter uses evidence to decide final shortlist actions
+### Dashboard Routes
+| Route | Purpose |
+|---|---|
+| `/` | Overview dashboard with hiring metrics |
+| `/jobs` | Job listing and management |
+| `/jobs/create` | New job form |
+| `/jobs/[id]` | Job detail, edit, delete |
+| `/screening/[jobId]` | AI screening trigger and ranked shortlist |
+| `/candidates` | All candidates across jobs |
+| `/candidates/[id]` | Candidate profile detail |
+| `/emails` | Shortlist email dispatch |
+| `/company` | Company profile management |
 
 ---
 
-## 6) Responsive UX Strategy
+## Access Control
 
-The UI is designed for operational usage on laptop and phone:
+Route protection is enforced in `proxy.ts` (Next.js middleware):
 
-- container spacing scales with `p-4 / p-6 / p-8`
-- action groups stack on mobile and align on larger breakpoints
-- data tables use horizontal overflow on small screens
-- dense content (screening/candidate detail) collapses into vertical sections on mobile
-- navigation switches to bottom tab pattern on small screens
+- Unauthenticated users hitting protected routes → redirected to `/login`
+- Authenticated users hitting auth pages → redirected to `/`
+- Static assets (images, fonts) are excluded from middleware matching
 
 ---
 
-## 7) Security and Data Protection (Frontend Layer)
+## Key Modules
 
-- no direct DB access from client
-- protected routes enforced before page render using edge proxy
-- all sensitive reads/writes delegated to authenticated backend APIs
-- no cross-company filtering logic trusted on client; backend is source of truth
+| File | Purpose |
+|---|---|
+| `app/lib/api.ts` | Typed API client with JWT injection |
+| `app/lib/errors.ts` | Consistent API error message extraction |
+| `app/lib/types.ts` | Shared domain type definitions |
+| `app/lib/store.ts` | Redux store configuration |
+| `app/components/Sidebar.tsx` | Desktop sidebar + mobile bottom nav |
+| `app/components/Toast.tsx` | Global async feedback notifications |
+| `app/components/Modal.tsx` | Reusable confirmation/action modal |
+| `app/components/ScoreBadge.tsx` | Visual score indicator for candidates |
+| `proxy.ts` | Edge middleware for auth and route protection |
 
 ---
 
-## 8) Environment Configuration
+## Company Onboarding — Why It Exists
 
-Create `.env.local`:
+The onboarding flow is the AI's calibration layer, not just a setup form.
+
+When a recruiter completes onboarding, they provide:
+- Company name, industry, size
+- Departments and hiring areas
+- Hiring philosophy (startup-fast, enterprise-structured, research-heavy, balanced)
+- Company description and culture signals
+- Core skills and tech stack
+
+This data is stored and injected into every Gemini screening prompt. A startup screening for a backend engineer gets different AI weighting than an enterprise doing the same search. Without this context, AI screening is generic. With it, shortlists are calibrated to how a specific company actually hires.
+
+The onboarding route is also guarded: once a company profile exists, the page redirects to the dashboard — it cannot be completed twice.
+
+---
+
+## Auth Screens — Design Rationale
+
+The login and register pages use a split-panel layout:
+- Left panel: full-height background image with a testimonial overlay
+- Right panel: clean, minimal form
+
+This layout was chosen to reduce cognitive load on the form side while giving the product a strong visual identity. The background image is served from `/public` as a static asset and rendered via Next.js `<Image>` with `fill` for optimal loading.
+
+---
+
+## Environment Setup
+
+Create `axios-frontend/.env.local`:
 
 ```env
 NEXT_PUBLIC_API_URL=http://localhost:5000/api
 ```
 
-For production, this must target deployed backend URL.
+For production, point this to your deployed backend URL.
 
 ---
 
-## 9) Local Development
+## Local Development
 
 ```bash
 npm install
@@ -151,7 +137,7 @@ Runs at `http://localhost:3000`.
 
 ---
 
-## 10) Production Build and Verification
+## Production Build
 
 ```bash
 npm run lint
@@ -159,42 +145,23 @@ npm run build
 npm run start
 ```
 
-Pre-deploy checks:
+---
 
-- lint passes
-- production build passes
-- auth redirects work as expected
-- onboarding lock behavior validated
-- core recruiter workflows validated end-to-end
+## Deployment (Vercel)
+
+1. Connect repository to Vercel
+2. Set `NEXT_PUBLIC_API_URL` in environment variables
+3. Ensure backend CORS allows the Vercel deployment domain
+4. Framework preset: Next.js (auto-detected)
 
 ---
 
-## 11) Deployment Guidance (Vercel)
+## Known Console Noise (Not Application Errors)
 
-- Framework preset: Next.js
-- Set `NEXT_PUBLIC_API_URL`
-- Ensure backend CORS allows frontend domain
-- Validate that public static assets (logo/backgrounds) resolve on deployed host
+The following errors appear in browser console from installed extensions and are not caused by this application:
 
----
+- `Could not establish connection. Receiving end does not exist` — browser extension messaging
+- `Failed to connect to MetaMask` — MetaMask extension not active
+- `SES Removing unpermitted intrinsics` — MetaMask security sandbox
 
-## 12) Known Non-Application Console Noise
-
-Errors like:
-
-- `Could not establish connection. Receiving end does not exist`
-- `Failed to connect to MetaMask`
-- `SES Removing unpermitted intrinsics`
-
-are typically injected by browser extensions and not by this application’s code path.
-
----
-
-## 13) Hackathon Requirement Alignment (Frontend)
-
-- recruiter dashboard present
-- job creation/editing/deletion present
-- applicant ingestion interfaces present
-- AI trigger and shortlist visualization present
-- reasoning per candidate visible in screening views
-- responsive design implemented for major user journeys
+These can be safely ignored.
