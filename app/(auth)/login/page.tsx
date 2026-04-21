@@ -51,7 +51,7 @@ export default function LoginPage() {
     <div className="min-h-screen flex">
       {/* Left panel with image */}
       <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden">
-        <Image src="/auth-bg.png" alt="" fill sizes="50vw" className="object-cover" priority />
+        <Image src="/auth.png" alt="" fill sizes="50vw" className="object-cover" priority />
           <div className="absolute inset-0 bg-black/30" />
             
           <div className="relative z-10 flex flex-col justify-between p-12 h-full">
