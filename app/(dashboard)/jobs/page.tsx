@@ -45,16 +45,16 @@ export default function JobsPage() {
   }
 
   return (
-    <div className="p-8 max-w-6xl mx-auto animate-fade-in relative">
-      <div className="flex items-end justify-between mb-8">
+    <div className="p-4 sm:p-6 lg:p-8 max-w-6xl mx-auto animate-fade-in relative">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between mb-8">
         <div>
           <h1 className="text-2xl font-bold">Job Pipelines</h1>
           <p className="text-sm text-[#71717a] mt-1">Manage your active recruitment positions</p>
         </div>
-        <Link href="/jobs/create" className="btn-primary">+ New Job</Link>
+        <Link href="/jobs/create" className="btn-primary w-full sm:w-auto text-center">+ New Job</Link>
       </div>
 
-      <div className="card overflow-hidden">
+      <div className="card overflow-x-auto">
         <table className="w-full">
           <thead>
             <tr className="text-left text-xs text-[#a1a1aa] uppercase tracking-wider border-b border-[#e4e4e7]">

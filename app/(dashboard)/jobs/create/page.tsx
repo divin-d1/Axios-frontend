@@ -71,13 +71,13 @@ export default function CreateJobPage() {
   };
 
   return (
-    <div className="p-8 max-w-3xl mx-auto animate-fade-in">
+    <div className="p-4 sm:p-6 lg:p-8 max-w-3xl mx-auto animate-fade-in">
       <div className="mb-8">
         <h1 className="text-2xl font-bold">Create Job Pipeline</h1>
         <p className="text-sm text-[#71717a] mt-1">Define a new role and configure AI scoring weights</p>
       </div>
 
-      <form onSubmit={handleSubmit} className="card p-8 space-y-6">
+      <form onSubmit={handleSubmit} className="card p-4 sm:p-6 lg:p-8 space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="space-y-1.5">
             <label className="text-sm font-medium">Job Title *</label>

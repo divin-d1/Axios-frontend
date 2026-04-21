@@ -44,7 +44,8 @@ export default function Sidebar() {
   }
 
   return (
-    <aside className={`sidebar ${expanded ? 'sidebar-expanded' : 'sidebar-collapsed'} h-screen flex-shrink-0 flex flex-col`}>
+    <>
+    <aside className={`sidebar ${expanded ? 'sidebar-expanded' : 'sidebar-collapsed'} h-screen flex-shrink-0 flex-col hidden md:flex`}>
       {/* Logo */}
       <div className={`flex items-center ${expanded ? 'px-6' : 'px-0 justify-center'} h-16 border-b border-white/10`}>
         <div className="w-8 h-8 rounded-full bg-black flex items-center justify-center p-1.5 flex-shrink-0">
@@ -106,5 +107,26 @@ export default function Sidebar() {
         </button>
       </div>
     </aside>
+
+    <nav className="md:hidden fixed bottom-0 inset-x-0 z-50 bg-[#09090b] border-t border-white/10 px-2 py-2">
+      <div className="grid grid-cols-5 gap-1">
+        {navItems.map((item) => {
+          const isActive = pathname === item.href || (pathname.startsWith(item.href) && item.href !== '/');
+          return (
+            <Link
+              key={item.name}
+              href={item.href}
+              className={`flex flex-col items-center justify-center gap-1 rounded-lg py-2 ${
+                isActive ? 'text-white bg-white/10' : 'text-white/60'
+              }`}
+            >
+              <span className="scale-90">{item.icon}</span>
+              <span className="text-[10px] leading-none">{item.name}</span>
+            </Link>
+          );
+        })}
+      </div>
+    </nav>
+    </>
   );
 }

@@ -102,7 +102,7 @@ export default function CompanyProfile() {
 
   if (loading) {
     return (
-      <div className="p-8 max-w-3xl mx-auto flex items-center justify-center min-h-[50vh]">
+      <div className="p-4 sm:p-6 lg:p-8 max-w-3xl mx-auto flex items-center justify-center min-h-[50vh]">
         <svg className="animate-spin h-8 w-8 text-[#09090b]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
           <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
           <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
@@ -112,13 +112,13 @@ export default function CompanyProfile() {
   }
 
   return (
-    <div className="p-8 max-w-3xl mx-auto animate-fade-in">
+    <div className="p-4 sm:p-6 lg:p-8 max-w-3xl mx-auto animate-fade-in">
       <div className="mb-8">
         <h1 className="text-2xl font-bold">Company Profile</h1>
         <p className="text-sm text-[#71717a] mt-1">This context directly guides AI candidate evaluation</p>
       </div>
 
-      <form onSubmit={handleSubmit} className="card p-8 space-y-6">
+      <form onSubmit={handleSubmit} className="card p-4 sm:p-6 lg:p-8 space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="space-y-1.5">
             <label className="text-sm font-medium">Company Name</label>
@@ -149,9 +149,9 @@ export default function CompanyProfile() {
 
           <div className="space-y-1.5 md:col-span-2">
             <label className="text-sm font-medium">Departments</label>
-            <div className="flex gap-2">
+            <div className="flex flex-col sm:flex-row gap-2">
               <input value={newDepartment} onChange={(e) => setNewDepartment(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); addDepartment(); } }} placeholder="e.g. Engineering, Sales, HR" className="input flex-1" />
-              <button type="button" onClick={addDepartment} className="btn-outline">Add</button>
+              <button type="button" onClick={addDepartment} className="btn-outline w-full sm:w-auto">Add</button>
             </div>
             {formData.departments.length > 0 && (
               <div className="flex flex-wrap gap-2 mt-3">
@@ -197,7 +197,7 @@ export default function CompanyProfile() {
         </div>
         
         <div className="flex items-center justify-end pt-4 border-t border-[#e4e4e7]">
-          <button type="submit" disabled={saving} className="btn-primary disabled:opacity-50">
+          <button type="submit" disabled={saving} className="btn-primary disabled:opacity-50 w-full sm:w-auto">
             {saving ? 'Saving...' : 'Save Configuration'}
           </button>
         </div>

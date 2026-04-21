@@ -98,7 +98,7 @@ export default function ScreeningResults() {
 
   if (loading) {
     return (
-      <div className="p-8 max-w-5xl mx-auto flex items-center justify-center min-h-[50vh]">
+      <div className="p-4 sm:p-6 lg:p-8 max-w-5xl mx-auto flex items-center justify-center min-h-[50vh]">
         <svg className="animate-spin h-8 w-8 text-[#09090b]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
           <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
           <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
@@ -110,7 +110,7 @@ export default function ScreeningResults() {
   const modeSummary = getScreeningModeSummary(meta?.screeningMode);
 
   return (
-    <div className="p-8 max-w-5xl mx-auto animate-fade-in relative">
+    <div className="p-4 sm:p-6 lg:p-8 max-w-5xl mx-auto animate-fade-in relative">
       <Link href={`/jobs/${jobId}`} className="text-sm text-[#71717a] hover:text-black mb-4 inline-block">← Back to Job</Link>
 
       <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between mb-8">
@@ -130,7 +130,7 @@ export default function ScreeningResults() {
             )}
           </div>
         </div>
-        <Link href="/emails" className="btn-primary">Notify Candidates</Link>
+        <Link href="/emails" className="btn-primary w-full md:w-auto text-center">Notify Candidates</Link>
       </div>
 
       {meta?.usedLocalFallback && (
@@ -147,8 +147,8 @@ export default function ScreeningResults() {
           </div>
         ) : (
           results.map((result, index) => (
-            <div key={result._id || index} className="card p-6 relative">
-              <div className="absolute top-4 right-4 flex items-center gap-2">
+            <div key={result._id || index} className="card p-4 sm:p-6 relative">
+              <div className="flex flex-wrap items-center gap-2 mb-3 sm:absolute sm:top-4 sm:right-4 sm:mb-0">
                 <span className={`rounded-full px-2.5 py-1 text-[11px] font-semibold ${badgeClassName(result.evaluationMode)}`}>
                   {getEvaluationModeLabel(result.evaluationMode)}
                 </span>
@@ -157,7 +157,7 @@ export default function ScreeningResults() {
                 </div>
               </div>
 
-              <div className="flex flex-col lg:flex-row gap-6 mt-8">
+              <div className="flex flex-col lg:flex-row gap-6 sm:mt-8">
                 <div className="lg:w-1/3 space-y-4">
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-full bg-[#09090b] text-white flex items-center justify-center text-sm font-bold shadow-sm">
@@ -197,8 +197,7 @@ export default function ScreeningResults() {
 
                   <div className="space-y-2">
                     <h3 className="text-xs font-semibold text-[#a1a1aa] uppercase tracking-wider mt-4">Screening Justification</h3>
-                    <p className="text-xs text-[#71717a] leading-relaxed mt-2" title={result.reasoning}>{result.reasoning || 'No reasoning available.'}</p>
-                    <div className="grid grid-cols-2 gap-4 mt-6">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6">
                       <div className="p-3 rounded-lg bg-white border border-black">
                         <p className="text-[11px] font-bold text-black mb-2">Strengths</p>
                         {(result.strengths?.length ?? 0) > 0 ? (

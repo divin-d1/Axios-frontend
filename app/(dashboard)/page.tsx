@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import apiClient from '../lib/api';
-import { CandidateIdentity, getCandidateDisplayName, getCandidateInitials, getEvaluationModeLabel } from '../lib/candidates';
+import InstallPwaButton from '../components/InstallPwaButton';
 
 const statusBadge = (status: string) => {
   const styles: Record<string, string> = {
@@ -24,15 +24,6 @@ type DashboardJob = {
   status?: string;
 };
 
-type DashboardScreening = {
-  _id?: string;
-  candidate?: CandidateIdentity;
-  job?: { title?: string };
-  overallScore?: number;
-  isShortlisted?: boolean;
-  evaluationMode?: string;
-};
-
 type DashboardData = {
   overview?: {
     activeJobs?: number;
@@ -40,7 +31,6 @@ type DashboardData = {
     totalScreenings?: number;
   };
   recentJobs?: DashboardJob[];
-  recentScreenings?: DashboardScreening[];
 };
 
 type DashboardResponse = {
@@ -81,8 +71,6 @@ export default function Dashboard() {
 
   const overview = data?.overview || { activeJobs: 0, totalCandidates: 0, totalScreenings: 0 };
   const recentJobs = data?.recentJobs || [];
-  const recentScreenings = data?.recentScreenings || [];
-
   const liveStats = [
     { label: 'Active Jobs', value: overview.activeJobs || '0', change: 'Current pipelines' },
     { label: 'Total Candidates', value: overview.totalCandidates || '0', change: 'Across all jobs' },
@@ -91,15 +79,18 @@ export default function Dashboard() {
   ];
 
   return (
-    <div className="p-8 max-w-7xl mx-auto animate-fade-in">
-      <div className="flex items-end justify-between mb-10">
+    <div className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto animate-fade-in">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between mb-10">
         <div>
           <p className="text-sm text-[#71717a] mb-1">Welcome back</p>
           <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
         </div>
-        <div className="flex items-center gap-2 text-sm text-[#71717a]">
-          <span className="w-2 h-2 rounded-full bg-emerald-500" />
-          AI Engine Online
+        <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
+          <div className="flex items-center gap-2 text-sm text-[#71717a]">
+            <span className="w-2 h-2 rounded-full bg-emerald-500" />
+            AI Engine Online
+          </div>
+          <InstallPwaButton />
         </div>
       </div>
 
@@ -113,79 +104,39 @@ export default function Dashboard() {
         ))}
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2 card p-0 overflow-hidden">
-          <div className="px-6 py-4 border-b border-[#e4e4e7] flex items-center justify-between">
-            <h2 className="font-semibold">Active Job Pipelines</h2>
-            <Link href="/jobs" className="text-sm text-[#71717a] hover:text-black transition-colors">View all →</Link>
-          </div>
-          {recentJobs.length === 0 ? (
-            <div className="p-8 text-center text-[#71717a] text-sm">No active jobs found. Create one to get started.</div>
-          ) : (
-            <table className="w-full">
-              <thead>
-                <tr className="text-left text-xs text-[#a1a1aa] uppercase tracking-wider border-b border-[#f4f4f5]">
-                  <th className="px-6 py-3 font-medium">Position</th>
-                  <th className="px-6 py-3 font-medium">Applicants</th>
-                  <th className="px-6 py-3 font-medium">Shortlist</th>
-                  <th className="px-6 py-3 font-medium">Status</th>
+      <div className="card p-0 overflow-x-auto">
+        <div className="px-6 py-4 border-b border-[#e4e4e7] flex items-center justify-between">
+          <h2 className="font-semibold">Recent Job Pipelines</h2>
+          <Link href="/jobs" className="text-sm text-[#71717a] hover:text-black transition-colors">View all →</Link>
+        </div>
+        {recentJobs.length === 0 ? (
+          <div className="p-8 text-center text-[#71717a] text-sm">No active jobs found. Create one to get started.</div>
+        ) : (
+          <table className="w-full">
+            <thead>
+              <tr className="text-left text-xs text-[#a1a1aa] uppercase tracking-wider border-b border-[#f4f4f5]">
+                <th className="px-6 py-3 font-medium">Position</th>
+                <th className="px-6 py-3 font-medium">Applicants</th>
+                <th className="px-6 py-3 font-medium">Shortlist</th>
+                <th className="px-6 py-3 font-medium">Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {recentJobs.map((job) => (
+                <tr key={job._id} className="table-row">
+                  <td className="px-6 py-4 font-medium">{job.title}</td>
+                  <td className="px-6 py-4 text-[#71717a]">{job.totalApplicants || 0}</td>
+                  <td className="px-6 py-4 text-[#71717a]">{job.shortlistSize || 0}</td>
+                  <td className="px-6 py-4">
+                    <span className={`badge ${statusBadge(job.status || 'open')}`}>
+                      {job.status || 'open'}
+                    </span>
+                  </td>
                 </tr>
-              </thead>
-              <tbody>
-                {recentJobs.map((job) => (
-                  <tr key={job._id} className="table-row">
-                    <td className="px-6 py-4 font-medium">{job.title}</td>
-                    <td className="px-6 py-4 text-[#71717a]">{job.totalApplicants || 0}</td>
-                    <td className="px-6 py-4 text-[#71717a]">{job.shortlistSize || 0}</td>
-                    <td className="px-6 py-4">
-                      <span className={`badge ${statusBadge(job.status || 'open')}`}>
-                        {job.status || 'open'}
-                      </span>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          )}
-        </div>
-
-        <div className="card p-0 overflow-hidden">
-          <div className="px-6 py-4 border-b border-[#e4e4e7]">
-            <h2 className="font-semibold">Top Matched Candidates</h2>
-          </div>
-          <div className="divide-y divide-[#f4f4f5]">
-            {recentScreenings.length === 0 ? (
-              <div className="p-8 text-center text-[#71717a] text-sm">No candidates processed yet.</div>
-            ) : (
-              recentScreenings.map((screening, index) => (
-                <div key={screening._id || index} className="px-6 py-4 flex items-center justify-between hover:bg-[#fafafa] transition-colors">
-                  <div className="flex items-center gap-3">
-                    <div className="w-9 h-9 rounded-full bg-[#09090b] text-white flex items-center justify-center text-xs font-bold">
-                      {getCandidateInitials(screening.candidate)}
-                    </div>
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <p className="font-medium text-sm">{getCandidateDisplayName(screening.candidate)}</p>
-                        <span className={`rounded-full px-2 py-0.5 text-[10px] font-semibold ${
-                          screening.evaluationMode === 'local-fallback'
-                            ? 'bg-amber-50 text-amber-800 border border-amber-200'
-                            : 'bg-emerald-50 text-emerald-700 border border-emerald-200'
-                        }`}>
-                          {getEvaluationModeLabel(screening.evaluationMode)}
-                        </span>
-                      </div>
-                      <p className="text-xs text-[#a1a1aa] truncate max-w-[120px]">{screening.job?.title || 'General'}</p>
-                    </div>
-                  </div>
-                  <div className="text-right">
-                    <p className="font-bold text-sm">{screening.overallScore || 0}%</p>
-                    <p className="text-[10px] text-[#a1a1aa]">{screening.isShortlisted ? 'Shortlisted' : 'Reviewed'}</p>
-                  </div>
-                </div>
-              ))
-            )}
-          </div>
-        </div>
+              ))}
+            </tbody>
+          </table>
+        )}
       </div>
     </div>
   );

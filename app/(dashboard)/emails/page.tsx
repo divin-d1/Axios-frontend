@@ -59,13 +59,13 @@ export default function EmailsPage() {
   }
 
   return (
-    <div className="p-8 max-w-3xl mx-auto animate-fade-in">
+    <div className="p-4 sm:p-6 lg:p-8 max-w-3xl mx-auto animate-fade-in">
       <div className="mb-8">
         <h1 className="text-2xl font-bold">Communications</h1>
         <p className="text-sm text-[#71717a] mt-1">Notify shortlisted candidates from screened pipelines</p>
       </div>
 
-      <div className="card p-8 space-y-6">
+      <div className="card p-4 sm:p-6 lg:p-8 space-y-6">
         <div className="space-y-1.5">
           <label className="text-sm font-medium">Select Job Pipeline</label>
           {jobs.length === 0 ? (
@@ -82,7 +82,7 @@ export default function EmailsPage() {
           <ul className="text-sm text-[#71717a] space-y-2 list-disc pl-4">
             <li>System extracts the AI-determined shortlist for this job</li>
             <li>Generates personalized &ldquo;Next Steps&rdquo; emails for each candidate</li>
-            <li>Dispatches emails asynchronously via your configured SMTP</li>
+            <li>Sends each shortlisted candidate a clear and professional update</li>
           </ul>
         </div>
 

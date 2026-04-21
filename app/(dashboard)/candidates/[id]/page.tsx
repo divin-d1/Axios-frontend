@@ -31,7 +31,7 @@ export default function CandidateDetailPage() {
 
   if (loading || !candidate) {
     return (
-      <div className="p-8 max-w-4xl mx-auto flex items-center justify-center min-h-[50vh]">
+      <div className="p-4 sm:p-6 lg:p-8 max-w-4xl mx-auto flex items-center justify-center min-h-[50vh]">
         {loading ? (
           <svg className="animate-spin h-8 w-8 text-[#09090b]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
             <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
@@ -45,19 +45,19 @@ export default function CandidateDetailPage() {
   }
 
   return (
-    <div className="p-8 max-w-5xl mx-auto animate-fade-in relative space-y-6">
+    <div className="p-4 sm:p-6 lg:p-8 max-w-5xl mx-auto animate-fade-in relative space-y-6">
       <Link href="/candidates" className="text-sm text-[#71717a] hover:text-black mb-4 inline-block">← Back to Talent Pool</Link>
       
       {/* Header */}
-      <div className="card p-8">
+      <div className="card p-4 sm:p-6 lg:p-8">
         <div className="flex items-start gap-4">
           <div className="w-16 h-16 rounded-full bg-[#09090b] text-white flex items-center justify-center text-2xl font-bold flex-shrink-0">
             {candidate.firstName?.charAt(0) || '?'}
           </div>
           <div className="flex-1">
-            <div className="flex justify-between items-start">
+            <div className="flex flex-col gap-3 sm:flex-row sm:justify-between sm:items-start">
               <div>
-                <h1 className="text-3xl font-bold">{candidate.firstName} {candidate.lastName}</h1>
+                <h1 className="text-2xl sm:text-3xl font-bold">{candidate.firstName} {candidate.lastName}</h1>
                 <p className="text-base text-[#71717a] mt-1">{candidate.headline || candidate.appliedJob?.title || 'Candidate'}</p>
               </div>
               <span className="badge badge-success">{candidate.status || 'New'}</span>
@@ -143,7 +143,7 @@ export default function CandidateDetailPage() {
           <div className="card p-6 space-y-4">
             <h2 className="font-semibold text-lg border-b border-[#f4f4f5] pb-2">Education</h2>
             {candidate.education?.length ? candidate.education.map((ed, i) => (
-              <div key={i} className="flex justify-between items-start">
+              <div key={i} className="flex flex-col gap-2 sm:flex-row sm:justify-between sm:items-start">
                 <div>
                   <h3 className="font-medium text-base text-[#09090b]">{ed.degree}</h3>
                   <p className="text-sm text-[#71717a] mt-0.5">{ed.institution} {ed.fieldOfStudy ? `— ${ed.fieldOfStudy}` : ''}</p>

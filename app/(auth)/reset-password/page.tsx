@@ -61,7 +61,7 @@ function ResetPasswordForm() {
       <div className="absolute bottom-[-10%] left-[-10%] w-[500px] h-[500px] rounded-full bg-black/10 blur-[150px] pointer-events-none" />
 
       {/* Main Glassmorphism Form Container */}
-      <div className="relative z-10 w-full max-w-md px-8 py-10 rounded-3xl backdrop-blur-xl bg-white/60 border border-white/20 shadow-2xl flex flex-col items-center animate-fade-in">
+      <div className="relative z-10 w-full max-w-md mx-4 sm:mx-0 px-5 sm:px-8 py-8 sm:py-10 rounded-3xl backdrop-blur-xl bg-white/60 border border-white/20 shadow-2xl flex flex-col items-center animate-fade-in">
         
         <div className="w-12 h-12 rounded-full bg-[#09090b] flex items-center justify-center mb-6 shadow-lg">
           <Image src="/logo.png" alt="Axios" width={64} height={16} className="h-4 w-auto object-contain brightness-0 invert" />
@@ -142,7 +142,7 @@ function ResetPasswordForm() {
       </div>
       
       {/* Footer Branding */}
-      <div className="absolute bottom-6 right-6 flex items-center bg-white/70 backdrop-blur-md px-3 py-1.5 rounded-full border border-black/5 shadow-sm">
+      <div className="hidden sm:flex absolute bottom-6 right-6 items-center bg-white/70 backdrop-blur-md px-3 py-1.5 rounded-full border border-black/5 shadow-sm">
         <span className="text-xs text-[#a1a1aa] mr-2 font-medium">presented by</span>
         <Image src="/logo.png" alt="Axios" width={48} height={12} className="h-3 w-auto object-contain opacity-80" />
       </div>
@@ -152,8 +152,8 @@ function ResetPasswordForm() {
 
 export default function ResetPasswordPage() {
   return (
-    <div className="min-h-screen relative flex flex-col items-center justify-center overflow-hidden bg-[#fafafa]">
-      <Suspense fallback={<div className="animate-pulse w-96 h-96 bg-gray-200 rounded-3xl" />}>
+    <div className="min-h-screen relative flex flex-col items-center justify-center overflow-hidden bg-[#fafafa] p-3 sm:p-0">
+      <Suspense fallback={<div className="animate-pulse w-full max-w-md h-96 bg-gray-200 rounded-3xl" />}>
         <ResetPasswordForm />
       </Suspense>
     </div>

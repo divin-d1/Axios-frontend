@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import apiClient from '../../lib/api';
 import { useToast } from '../../components/Toast';
 import { getApiErrorMessage } from '../../lib/errors';
@@ -16,6 +17,8 @@ const steps = [
   // Removed hardcoded INDUSTRIES; will fetch from backend.
 
 export default function OnboardingPage() {
+  const router = useRouter();
+  const [canAccess, setCanAccess] = useState(false);
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
     name: '', email: '', website: '', size: 'medium',
@@ -31,6 +34,23 @@ export default function OnboardingPage() {
   const toast = useToast();
 
   useEffect(() => {
+    const guardOnboarding = async () => {
+      try {
+        const res = await apiClient.get<{ user?: { company?: unknown } }>('/company/me');
+        if (res.data?.user?.company) {
+          router.replace('/');
+          return;
+        }
+        setCanAccess(true);
+      } catch {
+        router.replace('/login');
+      }
+    };
+
+    guardOnboarding();
+  }, [router]);
+
+  useEffect(() => {
     const fetchConstants = async () => {
       try {
         const res = await apiClient.get<{ industries?: string[]; departments?: string[] }>('/config/constants');
@@ -42,6 +62,17 @@ export default function OnboardingPage() {
     };
     fetchConstants();
   }, []);
+
+  if (!canAccess) {
+    return (
+      <div className="w-full min-h-screen flex items-center justify-center">
+        <svg className="animate-spin h-8 w-8 text-[#09090b]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+        </svg>
+      </div>
+    );
+  }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -83,7 +114,7 @@ export default function OnboardingPage() {
   };
 
   return (
-    <div className="w-full min-h-screen bg-[#fafafa] flex items-center justify-center p-6 overflow-y-auto">
+    <div className="w-full min-h-screen bg-[#fafafa] flex items-center justify-center p-3 sm:p-6 overflow-y-auto">
       <div className="w-full max-w-2xl">
         <div className="flex items-center gap-3 mb-10">
           <div className="w-8 h-8 rounded-full bg-black p-1.5 flex items-center justify-center flex-shrink-0">
@@ -92,7 +123,7 @@ export default function OnboardingPage() {
           <span className="text-lg font-bold tracking-wider">AXIOS</span>
         </div>
 
-        <div className="flex items-center gap-0 mb-10">
+        <div className="hidden sm:flex items-center gap-0 mb-10">
           {steps.map((s, i) => (
             <div key={s.id} className="flex items-center flex-1">
               <div className="flex flex-col items-center flex-1">
@@ -108,7 +139,7 @@ export default function OnboardingPage() {
           ))}
         </div>
 
-        <div className="bg-white border border-[#e4e4e7] rounded-xl p-8 shadow-sm">
+        <div className="bg-white border border-[#e4e4e7] rounded-xl p-4 sm:p-8 shadow-sm">
           {/* Step 1: Company Info */}
           {step === 1 && (
             <div className="animate-fade-in space-y-6">
@@ -123,7 +154,7 @@ export default function OnboardingPage() {
                 
                 <div className="space-y-1.5 md:col-span-2">
                   <label className="text-sm font-medium">Industries</label>
-                  <div className="flex gap-2">
+                  <div className="flex flex-col sm:flex-row gap-2">
                     <select 
                       onChange={(e) => {
                         const val = e.target.value;
@@ -153,7 +184,7 @@ export default function OnboardingPage() {
 
                 <div className="space-y-1.5 md:col-span-2">
                   <label className="text-sm font-medium">Departments</label>
-                  <div className="flex gap-2">
+                  <div className="flex flex-col sm:flex-row gap-2">
                     <select 
                       onChange={(e) => {
                         const val = e.target.value;
@@ -162,7 +193,7 @@ export default function OnboardingPage() {
                         }
                         e.target.value = ""; // reset select
                       }} 
-                      className="input w-2/3 bg-white"
+                      className="input w-full sm:w-2/3 bg-white"
                     >
                       <option value="">Select predefined department...</option>
                       {availableDepartments.map(dep => (
@@ -170,7 +201,7 @@ export default function OnboardingPage() {
                       ))}
                     </select>
                     <input value={newDepartment} onChange={(e) => setNewDepartment(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && addDepartment()} placeholder="Or type custom..." className="input flex-1" />
-                    <button onClick={addDepartment} className="btn-outline">Add</button>
+                    <button onClick={addDepartment} className="btn-outline w-full sm:w-auto">Add</button>
                   </div>
                   {formData.departments.length > 0 && (
                     <div className="flex flex-wrap gap-2 mt-3">
@@ -247,9 +278,9 @@ export default function OnboardingPage() {
           )}
 
           {step < 4 && (
-            <div className="flex justify-between mt-8 pt-6 border-t border-[#e4e4e7]">
-              <button onClick={prev} disabled={step === 1} className="btn-outline disabled:opacity-30 disabled:cursor-not-allowed">Back</button>
-              <button onClick={next} className="btn-primary">{step === 3 ? 'Complete Setup' : 'Continue'}</button>
+            <div className="flex flex-col-reverse sm:flex-row gap-3 sm:justify-between mt-8 pt-6 border-t border-[#e4e4e7]">
+              <button onClick={prev} disabled={step === 1} className="btn-outline disabled:opacity-30 disabled:cursor-not-allowed w-full sm:w-auto">Back</button>
+              <button onClick={next} className="btn-primary w-full sm:w-auto">{step === 3 ? 'Complete Setup' : 'Continue'}</button>
             </div>
           )}
         </div>

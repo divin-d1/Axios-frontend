@@ -31,6 +31,17 @@ export default function JobDetailPage() {
   const [loading, setLoading] = useState(true);
   const [screening, setScreening] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editForm, setEditForm] = useState({
+    title: '',
+    department: '',
+    location: '',
+    description: '',
+    shortlistSize: '5',
+    requiredSkills: '',
+  });
   const csvInputRef = useRef<HTMLInputElement>(null);
   const resumeInputRef = useRef<HTMLInputElement>(null);
 
@@ -51,6 +62,11 @@ export default function JobDetailPage() {
   }, [id, fetchJob]);
 
   const handleRunScreening = async () => {
+    if ((job?.candidateCount || job?.totalApplicants || 0) < 1) {
+      toast.error('Upload candidates before running screening.');
+      return;
+    }
+
     setScreening(true);
     try {
       await apiClient.post(`/screening/${id}`);
@@ -60,6 +76,55 @@ export default function JobDetailPage() {
       toast.error(getApiErrorMessage(err, 'Failed to start screening'));
     } finally {
       setScreening(false);
+    }
+  };
+
+  const startEdit = () => {
+    if (!job) return;
+    setEditForm({
+      title: job.title || '',
+      department: job.department || '',
+      location: job.location || '',
+      description: job.description || '',
+      shortlistSize: String(job.shortlistSize || 5),
+      requiredSkills: (job.requiredSkills || []).join(', '),
+    });
+    setIsEditing(true);
+  };
+
+  const handleUpdateJob = async () => {
+    setSaving(true);
+    try {
+      await apiClient.put(`/jobs/${id}`, {
+        title: editForm.title.trim(),
+        department: editForm.department.trim(),
+        location: editForm.location.trim(),
+        description: editForm.description.trim(),
+        shortlistSize: Number(editForm.shortlistSize || 5),
+        requiredSkills: editForm.requiredSkills.split(',').map((skill) => skill.trim()).filter(Boolean),
+      });
+      toast.success('Job updated successfully.');
+      setIsEditing(false);
+      await fetchJob();
+    } catch (err: unknown) {
+      toast.error(getApiErrorMessage(err, 'Failed to update job'));
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleDeleteJob = async () => {
+    if (!window.confirm('Delete this job and all related candidates and screening results?')) return;
+
+    setDeleting(true);
+    try {
+      await apiClient.delete(`/jobs/${id}`);
+      toast.success('Job and related data deleted.');
+      router.push('/jobs');
+    } catch (err: unknown) {
+      toast.error(getApiErrorMessage(err, 'Failed to delete job'));
+    } finally {
+      setDeleting(false);
     }
   };
 
@@ -142,23 +207,41 @@ export default function JobDetailPage() {
   const weights: Record<string, number> = job.scoringWeights || {};
 
   return (
-    <div className="p-8 max-w-4xl mx-auto animate-fade-in">
+    <div className="p-4 sm:p-6 lg:p-8 max-w-4xl mx-auto animate-fade-in">
       <Link href="/jobs" className="text-sm text-[#71717a] hover:text-black mb-4 inline-block">← Back to Jobs</Link>
       
-      <div className="flex items-start justify-between mb-8">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between mb-8">
         <div>
           <h1 className="text-2xl font-bold">{job.title}</h1>
           <p className="text-sm text-[#71717a] mt-1">{job.department || 'General'} · {job.location || 'Remote'}</p>
         </div>
-        <span className={`badge ${statusBadge(job.status || 'open')} text-sm`}>{job.status || 'open'}</span>
+        <span className={`badge ${statusBadge(job.status || 'open')} text-sm w-fit`}>{job.status || 'open'}</span>
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-3 gap-4 mb-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
         <div className="stat-card"><p className="text-sm text-[#71717a]">Candidates</p><p className="text-2xl font-bold">{job.candidateCount || job.totalApplicants || 0}</p></div>
         <div className="stat-card"><p className="text-sm text-[#71717a]">Target Shortlist</p><p className="text-2xl font-bold">{job.shortlistSize || 0}</p></div>
         <div className="stat-card"><p className="text-sm text-[#71717a]">Required Skills</p><p className="text-2xl font-bold">{job.requiredSkills?.length || 0}</p></div>
       </div>
+
+      {isEditing && (
+        <div className="card p-6 mb-6 space-y-4">
+          <h2 className="font-semibold">Update Job</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <input className="input w-full" value={editForm.title} onChange={(e) => setEditForm((prev) => ({ ...prev, title: e.target.value }))} placeholder="Title" />
+            <input className="input w-full" value={editForm.department} onChange={(e) => setEditForm((prev) => ({ ...prev, department: e.target.value }))} placeholder="Department" />
+            <input className="input w-full" value={editForm.location} onChange={(e) => setEditForm((prev) => ({ ...prev, location: e.target.value }))} placeholder="Location" />
+            <input type="number" min={1} className="input w-full" value={editForm.shortlistSize} onChange={(e) => setEditForm((prev) => ({ ...prev, shortlistSize: e.target.value }))} placeholder="Shortlist size" />
+          </div>
+          <input className="input w-full" value={editForm.requiredSkills} onChange={(e) => setEditForm((prev) => ({ ...prev, requiredSkills: e.target.value }))} placeholder="Required skills (comma separated)" />
+          <textarea className="input w-full min-h-24" value={editForm.description} onChange={(e) => setEditForm((prev) => ({ ...prev, description: e.target.value }))} placeholder="Description" />
+          <div className="flex flex-col sm:flex-row gap-3">
+            <button className="btn-primary disabled:opacity-50 w-full sm:w-auto" onClick={handleUpdateJob} disabled={saving}>{saving ? 'Saving...' : 'Save Changes'}</button>
+            <button className="btn-outline w-full sm:w-auto" onClick={() => setIsEditing(false)}>Cancel</button>
+          </div>
+        </div>
+      )}
 
       {/* Upload Candidates */}
       <div className="card p-6 mb-6">
@@ -250,8 +333,8 @@ export default function JobDetailPage() {
       </div>
 
       {/* Actions */}
-      <div className="flex gap-4 mt-8">
-        <button className="btn-primary disabled:opacity-50 flex items-center gap-2" onClick={handleRunScreening} disabled={screening}>
+      <div className="flex flex-col sm:flex-row sm:flex-wrap gap-3 mt-8">
+        <button className="btn-primary disabled:opacity-50 flex items-center justify-center gap-2 w-full sm:w-auto" onClick={handleRunScreening} disabled={screening || (job.candidateCount || job.totalApplicants || 0) < 1}>
           {screening ? (
             <>
               <svg className="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -262,8 +345,10 @@ export default function JobDetailPage() {
             </>
           ) : 'Run AI Screening'}
         </button>
-        <Link href={`/screening/${id}`} className="btn-outline">View Screening Results</Link>
-        <Link href={`/candidates`} className="btn-outline">View Candidates</Link>
+        <button className="btn-outline w-full sm:w-auto" onClick={startEdit}>Update Job</button>
+        <button className="btn-outline border-red-200 text-red-600 hover:bg-red-50 disabled:opacity-50 w-full sm:w-auto" onClick={handleDeleteJob} disabled={deleting}>{deleting ? 'Deleting...' : 'Delete Job'}</button>
+        <Link href={`/screening/${id}`} className="btn-outline w-full sm:w-auto text-center">View Screening Results</Link>
+        <Link href={`/candidates`} className="btn-outline w-full sm:w-auto text-center">View Candidates</Link>
       </div>
     </div>
   );

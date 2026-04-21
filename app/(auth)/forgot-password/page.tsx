@@ -49,7 +49,7 @@ export default function ForgotPasswordPage() {
       </div>
 
       {/* Right panel with minimalist form */}
-      <div className="flex-1 flex flex-col justify-center px-12 lg:px-24">
+      <div className="flex-1 flex flex-col justify-center px-6 sm:px-10 lg:px-24 py-8">
         
         <div className="w-full max-w-[400px]">
           {/* Subtle Logo inclusion */}
@@ -57,7 +57,7 @@ export default function ForgotPasswordPage() {
             <Image src="/logo.png" alt="Axios" width={32} height={32} className="w-[80%] h-[80%] object-contain brightness-0 invert" />
           </div>
 
-          <h1 className="text-[44px] font-extrabold mb-4 tracking-[-0.02em] leading-[1.1]">
+          <h1 className="text-3xl sm:text-[44px] font-extrabold mb-4 tracking-[-0.02em] leading-[1.1]">
             Forgot<br />Password?
           </h1>
           <p className="text-[15px] font-medium text-[#71717a] mb-12 leading-relaxed max-w-[280px]">
@@ -76,7 +76,7 @@ export default function ForgotPasswordPage() {
               />
             </div>
 
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col-reverse sm:flex-row sm:items-center sm:justify-between gap-4">
               {/* Replacing "Try another way" with Back to Login */}
               <Link href="/login" className="text-sm font-medium text-[#a1a1aa] hover:text-[#09090b] transition-colors focus:outline-none focus:ring-2 focus:ring-[#09090b] focus:ring-offset-2 rounded-sm pr-4">
                 Back to Login
@@ -86,7 +86,7 @@ export default function ForgotPasswordPage() {
               <button 
                 type="submit" 
                 disabled={loading}
-                className="btn-primary rounded-full px-10 py-3 text-[15px] font-bold shadow-lg hover:shadow-xl transition-all active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center min-w-[130px]"
+                className="btn-primary rounded-full px-10 py-3 text-[15px] font-bold shadow-lg hover:shadow-xl transition-all active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center min-w-[130px] w-full sm:w-auto"
               >
                 {loading ? (
                   <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
