@@ -51,13 +51,13 @@ export default function LoginPage() {
     <div className="min-h-screen flex">
       {/* Left panel with image */}
       <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden">
-        <Image src="/auth-bg.svg" alt="" fill sizes="50vw" className="object-cover" priority />
+        <Image src="/auth-bg.png" alt="" fill sizes="50vw" className="object-cover" priority />
           <div className="absolute inset-0 bg-black/30" />
             
           <div className="relative z-10 flex flex-col justify-between p-12 h-full">
             <div>
               <div className="w-10 h-10 rounded-full bg-black flex items-center justify-center p-2 mb-4">
-                <Image src="/logo.svg" alt="Axios Logo" width={32} height={32} className="w-full h-full object-contain" />
+                <Image src="/logo.png" alt="Axios Logo" width={32} height={32} className="w-full h-full object-contain" />
               </div>
             </div>
             

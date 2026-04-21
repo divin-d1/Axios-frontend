@@ -118,7 +118,7 @@ export default function OnboardingPage() {
       <div className="w-full max-w-2xl">
         <div className="flex items-center gap-3 mb-10">
           <div className="w-8 h-8 rounded-full bg-black p-1.5 flex items-center justify-center flex-shrink-0">
-            <Image src="/logo.svg" alt="Axios" width={32} height={32} className="w-full h-full object-contain" />
+            <Image src="/logo.png" alt="Axios" width={32} height={32} className="w-full h-full object-contain" />
           </div>
           <span className="text-lg font-bold tracking-wider">AXIOS</span>
         </div>

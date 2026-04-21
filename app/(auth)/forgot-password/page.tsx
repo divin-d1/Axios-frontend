@@ -39,7 +39,7 @@ export default function ForgotPasswordPage() {
       {/* Left panel with Graphic */}
       <div className="hidden lg:flex lg:w-1/2 bg-[#f4f4f5] items-center justify-center p-12">
         <Image
-          src="/forgot-password-bg.svg"
+          src="/forgot-password-bg.png"
           alt="Security Graphic"
           width={600}
           height={600}
@@ -54,7 +54,7 @@ export default function ForgotPasswordPage() {
         <div className="w-full max-w-[400px]">
           {/* Subtle Logo inclusion */}
           <div className="w-10 h-10 rounded-full bg-[#09090b] flex items-center justify-center p-2 mb-12 shadow-md">
-            <Image src="/logo.svg" alt="Axios" width={32} height={32} className="w-[80%] h-[80%] object-contain brightness-0 invert" />
+            <Image src="/logo.png" alt="Axios" width={32} height={32} className="w-[80%] h-[80%] object-contain brightness-0 invert" />
           </div>
 
           <h1 className="text-3xl sm:text-[44px] font-extrabold mb-4 tracking-[-0.02em] leading-[1.1]">

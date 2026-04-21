@@ -6,6 +6,7 @@ import { useParams, useRouter } from 'next/navigation';
 import apiClient from '../../../lib/api';
 import { useToast } from '../../../components/Toast';
 import { getApiErrorMessage } from '../../../lib/errors';
+import Modal from '../../../components/Modal';
 import type { Job } from '../../../lib/types';
 
 const statusBadge = (status: string) => {
@@ -33,6 +34,7 @@ export default function JobDetailPage() {
   const [uploading, setUploading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editForm, setEditForm] = useState({
     title: '',
@@ -114,12 +116,11 @@ export default function JobDetailPage() {
   };
 
   const handleDeleteJob = async () => {
-    if (!window.confirm('Delete this job and all related candidates and screening results?')) return;
-
     setDeleting(true);
     try {
       await apiClient.delete(`/jobs/${id}`);
       toast.success('Job and related data deleted.');
+      setIsDeleteModalOpen(false);
       router.push('/jobs');
     } catch (err: unknown) {
       toast.error(getApiErrorMessage(err, 'Failed to delete job'));
@@ -346,10 +347,37 @@ export default function JobDetailPage() {
           ) : 'Run AI Screening'}
         </button>
         <button className="btn-outline w-full sm:w-auto" onClick={startEdit}>Update Job</button>
-        <button className="btn-outline border-red-200 text-red-600 hover:bg-red-50 disabled:opacity-50 w-full sm:w-auto" onClick={handleDeleteJob} disabled={deleting}>{deleting ? 'Deleting...' : 'Delete Job'}</button>
+        <button className="btn-outline border-red-200 text-red-600 hover:bg-red-50 disabled:opacity-50 w-full sm:w-auto" onClick={() => setIsDeleteModalOpen(true)} disabled={deleting}>{deleting ? 'Deleting...' : 'Delete Job'}</button>
         <Link href={`/screening/${id}`} className="btn-outline w-full sm:w-auto text-center">View Screening Results</Link>
         <Link href={`/candidates`} className="btn-outline w-full sm:w-auto text-center">View Candidates</Link>
       </div>
+
+      <Modal
+        isOpen={isDeleteModalOpen}
+        onClose={() => !deleting && setIsDeleteModalOpen(false)}
+        title="Delete Job"
+        maxWidth="md"
+      >
+        <p className="text-sm text-neutral-300 mb-6">
+          Are you sure you want to delete this job? All related candidates and screening results will be permanently removed.
+        </p>
+        <div className="flex flex-col sm:flex-row gap-3">
+          <button
+            className="btn-outline w-full sm:w-auto"
+            onClick={() => setIsDeleteModalOpen(false)}
+            disabled={deleting}
+          >
+            Cancel
+          </button>
+          <button
+            className="btn-primary w-full sm:w-auto bg-red-600 hover:bg-red-700"
+            onClick={handleDeleteJob}
+            disabled={deleting}
+          >
+            {deleting ? 'Deleting...' : 'Yes, Delete Job'}
+          </button>
+        </div>
+      </Modal>
     </div>
   );
 }

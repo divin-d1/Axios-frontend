@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   title: "Axios AI Recruitment",
   description: "AI-powered talent screening platform.",
   icons: {
-    icon: '/logo.svg',
+    icon: '/logo.png',
   },
 };
 
